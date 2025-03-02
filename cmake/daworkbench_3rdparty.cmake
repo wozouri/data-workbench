@@ -145,7 +145,7 @@ macro(damacro_import_orderedmap __target_name)
     # 而是在share/cmake下面
     # tsl-ordered-map无法使用damacro_import_x_x_sharepath或者damacro_import_x_x这些宏
     # 因为他的package名称为tsl-ordered-map，他的库名称为ordered_map
-    find_package(tsl-ordered-map)
+    find_package(tsl-ordered-map REQUIRED)
     if(tsl-ordered-map_FOUND)
         message(STATUS "  |-finded tsl-ordered-map")
     else()

@@ -2,26 +2,26 @@
 // stl
 #include <iostream>
 // Qt
-#include <QProcess>
-#include <QObject>
 #include <QApplication>
 #include <QDebug>
-#include <QLocale>
-#include <QFileInfo>
-#include <QFile>
 #include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QLocale>
+#include <QObject>
+#include <QProcess>
 #include <QStandardPaths>
 // DA
-#include "DAConfigs.h"
 #include "DAAppCore.h"
+#include "DAConfigs.h"
+#include "DADir.h"
+#include "DADumpCapture.h"
 #include "DAMessageHandler.h"
 #include "DATranslatorManeger.h"
-#include "DADumpCapture.h"
-#include "DADir.h"
 #if DA_ENABLE_PYTHON
-#include "DAPybind11InQt.h"
-#include "DAPyScripts.h"
 #include "DAPyInterpreter.h"
+#include "DAPyScripts.h"
+#include "DAPybind11InQt.h"
 #include "DAPybind11QtTypeCast.h"
 #endif
 // SARibbon
@@ -51,57 +51,63 @@ bool parsingArguments(const QStringList& args);
  */
 int main(int argc, char* argv[])
 {
-	// 进行dump捕获
-	DA::DADumpCapture::initDump([]() -> QString { return appPreposeDump(); });
-	//
+    // 进行dump捕获
+    DA::DADumpCapture::initDump([]() -> QString
+                                { return appPreposeDump(); });
+    //
 
-	// 注册旋转文件消息捕获
-	DA::daRegisterRotatingMessageHandler(DA::DADir::getFullLogFilePath());
-	// DA::daRegisterConsolMessageHandler();
-	for (int i = 0; i < argc; ++i) {
-		qDebug() << "argv[" << i << "]" << argv[ i ] << endl;
-	}
-	// 高清屏的适配
-	enableHDPIScaling();
-	// 打印程序默认路径
-	qDebug() << DA::DADir();
-	// 启动app
-	QApplication app(argc, argv);
+    // 注册旋转文件消息捕获
+    DA::daRegisterRotatingMessageHandler(DA::DADir::getFullLogFilePath());
+    // DA::daRegisterConsolMessageHandler();
+    for (int i = 0; i < argc; ++i)
+    {
+        qDebug() << "argv[" << i << "]" << argv[i]; // << endl;
+    }
+    // 高清屏的适配
+    enableHDPIScaling();
+    // 打印程序默认路径
+    qDebug() << DA::DADir();
+    // 启动app
+    QApplication app(argc, argv);
 
-	// 安装翻译
-	DA::DATranslatorManeger datr;
-	datr.installAllTranslator();
+    // 安装翻译
+    DA::DATranslatorManeger datr;
+    datr.installAllTranslator();
 
-	// 解析命令行参数
-	QStringList appArguments = app.arguments();
-	if (!parsingArguments(appArguments)) {
-		return 0;
-	}
+    // 解析命令行参数
+    QStringList appArguments = app.arguments();
+    if (!parsingArguments(appArguments))
+    {
+        return 0;
+    }
 #if DA_ENABLE_PYTHON
-	// 注册元对象
-	DA::PY::registerMetaType();
+    // 注册元对象
+    DA::PY::registerMetaType();
 #endif
-	setAppFont();
-	DA::DAAppCore& core = DA::DAAppCore::getInstance();
-	// 初始化python环境
-	if (!core.initialized()) {
-		qCritical() << QObject::tr("Kernel initialization failed");  // cn:内核初始化失败
-		return -1;
-	}
+    setAppFont();
+    DA::DAAppCore& core = DA::DAAppCore::getInstance();
+    // 初始化python环境
+    if (!core.initialized())
+    {
+        qCritical() << QObject::tr("Kernel initialization failed"); // cn:内核初始化失败
+        return -1;
+    }
 
-	// TODO 此处进行一些核心的初始化操作
-	DA::AppMainWindow w;
-	if (appArguments.size() > 1) {
-		// 说明有可能是双击文件打开，这时候要看参数2是否为一个工程文件
-		QFileInfo openfi(appArguments[ 1 ]);
-		if (openfi.exists()) {
-			w.openProject(openfi.absoluteFilePath());
-		}
-	}
-	w.show();
-	int r = app.exec();
-	DA::daUnregisterMessageHandler();
-	return r;
+    // TODO 此处进行一些核心的初始化操作
+    DA::AppMainWindow w;
+    if (appArguments.size() > 1)
+    {
+        // 说明有可能是双击文件打开，这时候要看参数2是否为一个工程文件
+        QFileInfo openfi(appArguments[1]);
+        if (openfi.exists())
+        {
+            w.openProject(openfi.absoluteFilePath());
+        }
+    }
+    w.show();
+    int r = app.exec();
+    DA::daUnregisterMessageHandler();
+    return r;
 }
 
 /**
@@ -110,16 +116,17 @@ int main(int argc, char* argv[])
  */
 QString daHelp()
 {
-	QString str = QObject::tr(""
-	                          "%1(%2) build %3\n"  // DAWorkbench(0.0.2) build 240215
-	                          "params:\n"
-	                          "--version : version information\n"    //--version :版本信息
-	                          "--describe : detailed information\n"  //--describe :详细信息
-	                          )
-	                  .arg(DA_PROJECT_NAME)
-	                  .arg(DA_VERSION)
-	                  .arg(DA_COMPILE_DATETIME);
-	return str;
+    QString str = QObject::tr(
+                      ""
+                      "%1(%2) build %3\n" // DAWorkbench(0.0.2) build 240215
+                      "params:\n"
+                      "--version : version information\n"   //--version :版本信息
+                      "--describe : detailed information\n" //--describe :详细信息
+                      )
+                      .arg(DA_PROJECT_NAME)
+                      .arg(DA_VERSION)
+                      .arg(DA_COMPILE_DATETIME);
+    return str;
 }
 
 /**
@@ -128,7 +135,7 @@ QString daHelp()
  */
 QString daVersionInfo()
 {
-	return DA_VERSION;
+    return DA_VERSION;
 }
 
 /**
@@ -137,9 +144,9 @@ QString daVersionInfo()
  */
 QString daDescribe()
 {
-	QString descibe =
-		QString("version:%1,compile datetime:%2,enable python:%3").arg(DA_VERSION).arg(DA_COMPILE_DATETIME).arg(DA_ENABLE_PYTHON);
-	return descibe;
+    QString descibe =
+        QString("version:%1,compile datetime:%2,enable python:%3").arg(DA_VERSION).arg(DA_COMPILE_DATETIME).arg(DA_ENABLE_PYTHON);
+    return descibe;
 }
 
 /**
@@ -149,21 +156,26 @@ QString daDescribe()
  */
 bool parsingArguments(const QStringList& args)
 {
-	// 信息输出
-	if (args.contains("--help")) {
-		QTextStream st(stdout);
-		st << daHelp() << Qt::endl;
-		return false;
-	} else if (args.contains("--version")) {
-		QTextStream st(stdout);
-		st << daVersionInfo() << Qt::endl;
-		return false;
-	} else if (args.contains("--describe")) {
-		QTextStream st(stdout);
-		st << daDescribe() << Qt::endl;
-		return false;
-	}
-	return true;
+    // 信息输出
+    if (args.contains("--help"))
+    {
+        QTextStream st(stdout);
+        st << daHelp() << Qt::endl;
+        return false;
+    }
+    else if (args.contains("--version"))
+    {
+        QTextStream st(stdout);
+        st << daVersionInfo() << Qt::endl;
+        return false;
+    }
+    else if (args.contains("--describe"))
+    {
+        QTextStream st(stdout);
+        st << daDescribe() << Qt::endl;
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -171,7 +183,7 @@ bool parsingArguments(const QStringList& args)
  */
 void enableHDPIScaling()
 {
-	SARibbonBar::initHighDpi();
+    SARibbonBar::initHighDpi();
 }
 
 /**
@@ -180,9 +192,9 @@ void enableHDPIScaling()
 void setAppFont()
 {
 #ifdef Q_OS_WIN
-	QFont font = QApplication::font();
-	font.setFamily(QStringLiteral(u"微软雅黑"));
-	QApplication::setFont(font);
+    QFont font = QApplication::font();
+    font.setFamily(QStringLiteral(u"微软雅黑"));
+    QApplication::setFont(font);
 #endif
 }
 
@@ -194,28 +206,32 @@ void setAppFont()
  */
 QString appPreposeDump()
 {
-	QString dumpFileDir = DA::DADir::getAppDataPath();
-	if (dumpFileDir.isEmpty()) {
-		dumpFileDir = QApplication::applicationDirPath();
-	}
-	dumpFileDir = QDir::toNativeSeparators(dumpFileDir + "/dumps");
-	QDir dir;
-	// 如果无法创建路径，将qcritual
-	// mkpath回保证能有此路径，否则会返回false
-	if (!dir.mkpath(dumpFileDir)) {
-		qCritical() << QObject::tr("Unable to create dump file path:%1");  // cn:无法创建音乐配置路径：%1
-	}
-	QString baseName           = QDateTime::currentDateTime().toString("yyyyMMddhhmmss.zzz");
-	QString dumpfileName       = QString("dump%1.dmp").arg(baseName);
-	QString systemInfofileName = QString("dump%1.sysinfo").arg(baseName);
-	// 生成sysinfo
-	QFile sysfi(QDir::toNativeSeparators(dumpFileDir + "/" + systemInfofileName));
-	if (sysfi.open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate)) {
-		QTextStream st(&sysfi);
-		QSysInfo s;
-		// 先写入da的信息
-		st << daDescribe() << "\r\n" << s << Qt::endl;
-	}
-	sysfi.close();
-	return QDir::toNativeSeparators(dumpFileDir + "/" + dumpfileName);
+    QString dumpFileDir = DA::DADir::getAppDataPath();
+    if (dumpFileDir.isEmpty())
+    {
+        dumpFileDir = QApplication::applicationDirPath();
+    }
+    dumpFileDir = QDir::toNativeSeparators(dumpFileDir + "/dumps");
+    QDir dir;
+    // 如果无法创建路径，将qcritual
+    // mkpath回保证能有此路径，否则会返回false
+    if (!dir.mkpath(dumpFileDir))
+    {
+        qCritical() << QObject::tr("Unable to create dump file path:%1"); // cn:无法创建音乐配置路径：%1
+    }
+    QString baseName = QDateTime::currentDateTime().toString("yyyyMMddhhmmss.zzz");
+    QString dumpfileName = QString("dump%1.dmp").arg(baseName);
+    QString systemInfofileName = QString("dump%1.sysinfo").arg(baseName);
+    // 生成sysinfo
+    QFile sysfi(QDir::toNativeSeparators(dumpFileDir + "/" + systemInfofileName));
+    if (sysfi.open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate))
+    {
+        QTextStream st(&sysfi);
+        QSysInfo s;
+        // 先写入da的信息
+        st << daDescribe() << "\r\n"
+           << s << Qt::endl;
+    }
+    sysfi.close();
+    return QDir::toNativeSeparators(dumpFileDir + "/" + dumpfileName);
 }

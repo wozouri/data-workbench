@@ -79,6 +79,8 @@ target_link_libraries(${DA_LIB_NAME} PUBLIC
 ########################################################
 # 第三方库
 ########################################################
+find_dependency(tsl-ordered-map REQUIRED)
+
 damacro_import_orderedmap(${DA_LIB_NAME})
 
 ########################################################

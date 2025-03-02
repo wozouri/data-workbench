@@ -53,6 +53,11 @@ target_link_libraries(${DA_LIB_NAME} PRIVATE
 )
 message(STATUS "${DA_LIB_NAME} Qt${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
 
+if(${QT_VERSION_MAJOR} EQUAL 6)
+    find_package(Qt6 REQUIRED COMPONENTS Core5Compat)
+    target_link_libraries(${DA_LIB_NAME} PRIVATE Qt6::Core5Compat)
+endif()
+
 # -------------link 3rdparty spdlog--------------------------
 # DAMessageHandler依赖spdlog
 # spdlog是header only

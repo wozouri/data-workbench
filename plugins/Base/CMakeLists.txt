@@ -99,7 +99,7 @@ target_link_libraries(${DA_PLUGIN_NAME} PUBLIC
 
 # 以下这些宏由daworkbench_plugin_utils.cmake提供，此文件会在DAWorkBench安装的时候一同安装到lib/cmake目录下
 # 只需要把DAWorkbench的cmake文件安装目录(lib/cmake)append到CMAKE_MODULE_PATH即可调用
-# list(APPEND CMAKE_MODULE_PATH ${DAWorkbench_CMake_DIR})
+list(APPEND CMAKE_MODULE_PATH ${DAWorkbench_CMake_DIR})
 damacro_import_SARibbonBar(${DA_PLUGIN_NAME} ${DAWorkbench_INSTALL_PATH})
 damacro_import_DALiteCtk(${DA_PLUGIN_NAME} ${DAWorkbench_INSTALL_PATH})
 damacro_import_QtAdvancedDocking(${DA_PLUGIN_NAME} ${DAWorkbench_INSTALL_PATH})
@@ -109,6 +109,8 @@ damacro_import_Python(${DA_PLUGIN_NAME} ${DAWorkbench_INSTALL_PATH})
 message(STATUS "DAWorkbench_DIR=${DAWorkbench_DIR}")
 # DAInterface
 # 指定DAWorkbench_DIR为工程的顶层BINARY_DIR，否则找不到${DA_PROJECT_NAME}
+find_package(tsl-ordered-map REQUIRED)
+
 find_package(DAWorkbench COMPONENTS 
     DAUtils 
     DAMessageHandler
@@ -127,7 +129,7 @@ find_package(DAWorkbench COMPONENTS
 )
 # 
 target_link_libraries(${DA_PLUGIN_NAME} PRIVATE
-    DAWorkbench::DAUtils 
+    DAWorkbench::DAUtils
     DAWorkbench::DAMessageHandler
     DAWorkbench::DAAxOfficeWrapper
     DAWorkbench::DAPyBindQt

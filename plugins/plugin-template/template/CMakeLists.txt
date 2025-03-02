@@ -97,7 +97,7 @@ target_link_libraries(${DA_PLUGIN_NAME} PRIVATE
 
 # 以下这些宏由daworkbench_plugin_utils.cmake提供，此文件会在DAWorkBench安装的时候一同安装到lib/cmake目录下
 # 只需要把DAWorkbench的cmake文件安装目录(lib/cmake)append到CMAKE_MODULE_PATH即可调用
-# list(APPEND CMAKE_MODULE_PATH ${DAWorkbench_CMake_DIR})
+list(APPEND CMAKE_MODULE_PATH ${DAWorkbench_CMake_DIR})
 damacro_import_SARibbonBar(${DA_PLUGIN_NAME} ${DAWorkbench_INSTALL_DIR})
 damacro_import_DALiteCtk(${DA_PLUGIN_NAME} ${DAWorkbench_INSTALL_DIR})
 damacro_import_QtAdvancedDocking(${DA_PLUGIN_NAME} ${DAWorkbench_INSTALL_DIR})
